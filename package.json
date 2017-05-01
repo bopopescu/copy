@@ -12,7 +12,7 @@
     "express": "~4.15.2",
     "jade": "~1.11.0",
     "morgan": "~1.8.1",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
     "angular": "^1.4.9 <1.6",
     "angular-animate": "^1.4.9 <1.6",
     "angular-aria": "^1.4.9 <1.6",
