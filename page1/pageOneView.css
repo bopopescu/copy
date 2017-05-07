@@ -1,3 +1,22 @@
 .pageOne-head {
-    color: green;
 }
+
+body{
+	font-family: "Chronicle Text G1 A";
+	background-color: #0C121C;
+	color: #FEFEFE;
+}
+p{
+	font-family: "Helvetica";
+	font-style: italic;
+	color: #7F9BA7;
+}
+
+#logo {
+	width: 95px;
+	height: 95px;
+	padding: 5px;
+}
+
+
+
