@@ -15,7 +15,8 @@
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
 
-function getSentiment(sentimentTweet) {
+// string to string
+function getSentimentLabel(sentimentTweet) {
   authorize(function(authClient) {
     var request = {
       project: 'angelic-bond-165518',
@@ -54,52 +55,3 @@ function authorize(callback) {
     callback(authClient);
 });
 }
-
-
-    
-/*
-
-var google = require('googleapis');
-var prediction = google.prediction('v1.6');
-var OAuth2 = google.auth.OAuth2;
-
-var oauth2Client = new OAuth2(
-  "434874717363-do0t7b8aqqvvhgolasf6euill1ebnhpl.apps.googleusercontent.com",
-  "7td5tz9XOUoVDczipdgzKoJB",
-  "http://localhost:8080/"
-);
-
-// set auth as a global default
-google.options({
-  auth: oauth2Client
-});
-
-var scopes = [
-  'https://www.googleapis.com/auth/prediction'
-]
-
-var url = oauth2Client.generateAuthUrl(
-    access_type: 'offline',
-    scope: scopes
-)
-
-oauth2Client.getToken(code, function (err, tokens) {
-  // Now tokens contains an access_token and an optional refresh_token. Save them.
-  if (!err) {
-    oauth2Client.setCredentials(tokens);
-  }
-});
-
-prediction.trainedmodels.predict( {
-  resource: {
-    id: 'angelic-bond-165518',
-
-  }
-}
-)
-
-function getSentiment(tweet) {
-
-}
-
-*/
