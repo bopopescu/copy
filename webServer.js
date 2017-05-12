@@ -33,7 +33,8 @@
 
 var express = require('express');
 var app = express();
-
+var async = require('async');
+var fs = require('fs');
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
 app.use(express.static(__dirname));
