@@ -35,14 +35,91 @@ var express = require('express');
 var app = express();
 var async = require('async');
 var fs = require('fs');
+var Twit = require('twit');
+var schedule = require('node-schedule');
+var nconf = require('nconf');
+nconf.file({ file: 'config.json' }).env();
+
+var twitter = new Twit({
+    consumer_key: nconf.get('TWITTER_CONSUMER_KEY'),
+    consumer_secret: nconf.get('TWITTER_CONSUMER_SECRET'),
+    access_token: nconf.get('TWITTER_ACCESS_TOKEN'),
+    access_token_secret: nconf.get('TWITTER_ACCESS_TOKEN_SECRET')
+});
+
+var citiesArray = require('./cities.json');
+citiesArray = citiesArray.slice(0, 100);
+
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
 app.use(express.static(__dirname));
 
+var cityNameToLatitude = {};
+var cityNameToLongitude = {};
+var cityNameToNumTweets = {};
+var cityNameToProportionPositive = {};
+var cityNameToProportionNegative = {};
+var cityNameToProportionNeutral = {};
+var createCitiesMapping = function() {
+  for (var index = 0; index < citiesArray.length; index++) {
+    var cityName = citiesArray[index].city;
+    var latitude = citiesArray[index].latitude;
+    var longitude = citiesArray[index].longitude;
+    cityNameToLatitude[cityName] = latitude;
+    cityNameToLongitude[cityName] = longitude;
+  }
+}
+
+var getStringifiedDate = function(dateObj) {
+  var partialString = dateObj.toISOString();
+  return partialString.substr(0, partialString.indexOf('T'));
+}
+
+var populateNumTweets = schedule.scheduleJob('0 0 0 * * *', function() {
+  async.each(citiesArray, function(city, callback) {
+    var todayDate = new Date();
+    var yesterdayDate = new Date();
+    yesterdayDate.setDate(todayDate.getDate() - 1);
+    var todayDateString = getStringifiedDate(todayDate);
+    var yesterdayDateString = getStringifiedDate(yesterdayDate);
+    var queryString = 'refugee since:' + yesterdayDateString + ' until:' + todayDateString; 
+    console.log(queryString);
+    twitter.get('search/tweets', {q: queryString, lang: 'en', count: 150}, function(err, data, response) {
+      cityNameToNumTweets[city.city] = data.statuses.length;
+      callback();
+    });
+  }, function (err) {
+    if (err) {
+      console.log("Issue");
+    } else {
+      console.log("done with no issues");
+      console.log(cityNameToNumTweets);
+    }
+  });
+});
+
+createCitiesMapping();
+
+app.get('/proportionPositive/:cityName', function(request, response) {
+  var cityName = request.params.cityName;
+  response.json(cityNameToProportionPositive[cityName]);
+});
+
+app.get('/proportionNeutral/:cityName', function(request, response) {
+  var cityName = request.params.cityName;
+  response.json(cityNameToProportionNeutral[cityName]);
+});
+
+app.get('/proportionNegative/:cityName', function(request, response) {
+  var cityName = request.params.cityName;
+  response.json(cityNameToProportionNegative[cityName]);
+});
 
 app.get('/', function (request, response) {
     response.send('Simple web server of files from ' + __dirname);
 });
+
+
 
 var server = app.listen(3000, function () {
     var port = server.address().port;
