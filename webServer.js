@@ -36,6 +36,8 @@ var app = express();
 var async = require('async');
 var fs = require('fs');
 var Twit = require('twit');
+
+/*
 var schedule = require('node-schedule');
 var nconf = require('nconf');
 nconf.file({ file: 'config.json' }).env();
@@ -148,7 +150,7 @@ app.get('/proportionNegative/:cityName', function(request, response) {
 app.get('/', function (request, response) {
     response.send('Simple web server of files from ' + __dirname);
 });
-
+*/
 
 var portNumber = process.env.PORT || 3000;
 var server = app.listen(portNumber, function () {
