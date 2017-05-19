@@ -147,12 +147,19 @@ app.get('/proportionNegative/:cityName', function(request, response) {
   response.json(cityNameToProportionNegative[cityName]);
 });
 
+*/
+
+// We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
+// the work for us.
+app.use(express.static(__dirname));
+
 app.get('/', function (request, response) {
     response.send('Simple web server of files from ' + __dirname);
 });
-*/
 
 var portNumber = process.env.PORT || 3000;
+console.log("the port number is ");
+console.log(portNumber);
 var server = app.listen(portNumber, function () {
     var port = server.address().port;
     console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
