@@ -23,12 +23,33 @@
 	        padding: 0;
 	        margin: 0;
 	      }
+
+button {
+      	top: 20px; 
+      	bottom: auto; 
+      	position: absolute; 
+      	z-index: 100; 
+      	left: 20px;
+      	background-color: white;
+      	width: 120px;
+	      height: 60px;
+	      border-radius: 5px;
+      }
+	  
+	  
 	    </style>
+
+
+
 
 	    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     </head>
     <body>
          <div id="map"></div>
+		<div id="button">
+			<button>Temporary</button>
+		</div>
+
 <!-- include cartodb.js library -->
 	    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
 	    <script type="infowindow/html" id="infowindow_template">
