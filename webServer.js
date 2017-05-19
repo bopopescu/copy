@@ -39,12 +39,42 @@ var Twit = require('twit');
 var schedule = require('node-schedule');
 var nconf = require('nconf');
 nconf.file({ file: 'config.json' }).env();
-
+var tweetMethods = require("./tweets/tweets.js");
 var twitter = new Twit({
     consumer_key: nconf.get('TWITTER_CONSUMER_KEY'),
     consumer_secret: nconf.get('TWITTER_CONSUMER_SECRET'),
     access_token: nconf.get('TWITTER_ACCESS_TOKEN'),
     access_token_secret: nconf.get('TWITTER_ACCESS_TOKEN_SECRET')
+});
+
+// Retrieve
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/refugeeDatabase');
+
+var citySchema = new mongoose.Schema({
+  numberPositive: Number,
+  numberNegative: Number, 
+  numberNeutral: Number,
+  name: String
+});
+
+var City = mongoose.model('City', citySchema);
+
+var removePromises = [City.remove({})];
+
+Promise.all(removePromises).then(function () {
+  City.create({
+    numberPositive: 0,
+    numberNegative: 0,
+    numberNeutral: 0,
+    name: 'Athens'
+  }, function(err, cityObj) {
+    if (err) {
+      console.error('Error create user', err);
+    } else {
+      console.log('Successfully added city');
+    } 
+  });
 });
 
 var citiesArray = require('./cities.json');
@@ -120,8 +150,8 @@ app.get('/', function (request, response) {
 });
 
 
-
-var server = app.listen(3000, function () {
+var portNumber = process.env.PORT || 3000;
+var server = app.listen(portNumber, function () {
     var port = server.address().port;
     console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
 });
