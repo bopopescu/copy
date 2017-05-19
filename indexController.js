@@ -15,6 +15,10 @@ homeApp.controller('HomeController', ['$scope', '$resource', '$routeParams',
 			    tiles_loader: true,
 			    zoom: 4
 			})
+			
+			
+
+
 			.done(function(vis, layers) {
 			  // layer 0 is the base layer, layer 1 is cartodb layer
 			  // setInteraction is disabled by default
@@ -24,6 +28,9 @@ homeApp.controller('HomeController', ['$scope', '$resource', '$routeParams',
 			  });
 			  
 			  
+			  
+
+
 
 			  var sublayer = layers[1].getSubLayer(0);
 
@@ -37,6 +44,14 @@ homeApp.controller('HomeController', ['$scope', '$resource', '$routeParams',
 			.error(function(err) {
 			  console.log(err);
 			});
+			
+			// add button action
+          $('button').on('click', function() {
+            var new_style = style.replace('marker-width: 10;','marker-width: ramp([pop_max], range(3,25), quantiles(7));');
+            cityLayer.setCartoCSS(new_style);
+          });
+          
+			
 		}
 		window.onload = main;
     }]);
