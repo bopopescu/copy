@@ -6,37 +6,57 @@ homeApp.controller('HomeController', ['$scope', '$resource', '$routeParams',
         $scope.main = {};
 
         function main() {
-			cartodb.createVis('map', 'https://kimngo.carto.com/api/v2/viz/e0f2f51a-239c-11e7-81a1-0ecd1babdde5/viz.json', {
-			    shareable: true,
-			    title: false,
-				scrollwheel: true,
-			    description: true,
-			    search: true,
-			    tiles_loader: true,
-			    zoom: 4
-			})
-			.done(function(vis, layers) {
-			  // layer 0 is the base layer, layer 1 is cartodb layer
-			  // setInteraction is disabled by default
-			  layers[1].setInteraction(true);
-			  layers[1].on('featureOver', function(e, latlng, pos, data) {
-			    cartodb.log.log(e, latlng, pos, data);
-			  });
-			  
-			  
+	  var times_clicked = 0; 
+	  
+        var map = new L.Map('map', {
+          zoomControl: true,
+          center: [40, -100],
+          zoom: 4
+        });
+		
+		
+		
+        L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+          attribution: 'Stamen'
+        }).addTo(map);
+		//https://kimngo.carto.com/api/v2/viz/ea83745e-3596-11e7-bddb-0e3ebc282e83/viz.json
+		cartodb.createLayer(map, 'https://kimngo.carto.com/api/v2/viz/ea83745e-3596-11e7-bddb-0e3ebc282e83/viz.json')
+            .addTo(map)
+         .on('done', function(layer) {
+		 layer.setOpacity(0.4);
+          layer.setInteraction(true);
+          layer.on('featureOver', function(e, latlng, pos, data) {
+            cartodb.log.log(e, latlng, pos, data);
+          });
+          layer.on('error', function(err) {
+            cartodb.log.log('error: ' + err);
+          });
+        }).on('error', function() {
+          cartodb.log.log("some error occurred");
+        });
+		
 
-			  var sublayer = layers[1].getSubLayer(0);
+        cartodb.createLayer(map, 'https://kimngo.carto.com/api/v2/viz/e0f2f51a-239c-11e7-81a1-0ecd1babdde5/viz.json')
+            .addTo(map)
+         .on('done', function(layer) {
+		 layer.setOpacity(0.4);
+          layer.setInteraction(true);
+          layer.on('featureOver', function(e, latlng, pos, data) {
+            cartodb.log.log(e, latlng, pos, data);
+          });
+		  $('button').on('click', function() {
+			if (times_clicked%2 == 0) layer.hide();
+			else layer.show();
+			times_clicked++;
+          });
+          layer.on('error', function(err) {
+            cartodb.log.log('error: ' + err);
+          });
+        }).on('error', function() {
+          cartodb.log.log("some error occurred");
+        });
+      }
+      // you could use $(window).load(main);
 
-			  sublayer.infowindow.set('template', $('#infowindow_template').html());
-			  // you can get the native map to work with it
-			  var map = vis.getNativeMap();
-			  // now, perform any operations you need
-			  // map.setZoom(3);
-			  map.panTo([40, -100]); //USA
-			})
-			.error(function(err) {
-			  console.log(err);
-			});
-		}
-		window.onload = main;
+      window.onload = main;
     }]);
