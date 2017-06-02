@@ -32,13 +32,14 @@
  *
  */
 
+var citiesArray = require('./../cities.json');
+
 var async = require('async');
 var fs = require('fs');
 var Twit = require('twit');
 
 var nconf = require('nconf');
-nconf.file({ file: './../config.json' }).env();
-var tweetMethods = require("./../tweets/tweets.js");
+nconf.file({ file: 'config.json' }).env();
 var twitter = new Twit({
     consumer_key: nconf.get('TWITTER_CONSUMER_KEY'),
     consumer_secret: nconf.get('TWITTER_CONSUMER_SECRET'),
@@ -62,7 +63,6 @@ var citySchema = new mongoose.Schema({
 
 var CityInfo = mongoose.model('CityInfo', citySchema);
 
-var citiesArray = require('./../cities.json');
 citiesArray = citiesArray.slice(0, 5);
 
 var getStringifiedDate = function(dateObj) {
