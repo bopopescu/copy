@@ -2,6 +2,7 @@
 <html lang="en" ng-app="homeApp" ng-controller="HomeController">
     <head>
         <title> UNHCR Project </title>
+        <!--
         <link href="./node_modules/angular-material/angular-material.css" rel="stylesheet" />
 
 	    <script src="./node_modules/angular/angular.js" type="text/javascript" ></script>
@@ -13,24 +14,45 @@
 	    <script src="node_modules/angular-route/angular-route.js"></script>
 
         <script src="indexController.js"></script>
-
+        //-->
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-	    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+	    <link rel="shortcut icon" href="https://cartodb.com/assets/favicon.ico" />
 	    <style>
 	      html, body, #map {
 	        height: 100%;
 	        padding: 0;
 	        margin: 0;
 	      }
+
+button {
+      	top: 20px; 
+      	bottom: auto; 
+      	position: absolute; 
+      	z-index: 100; 
+      	left: 20px;
+      	background-color: white;
+      	width: 120px;
+	      height: 60px;
+	      border-radius: 5px;
+      }
+	  
+	  
 	    </style>
 
-	    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+
+
+
+	    <link rel="stylesheet" href="carto.css" />
     </head>
     <body>
          <div id="map"></div>
+		<div id="button">
+			<button>Temporary</button>
+		</div>
+
 <!-- include cartodb.js library -->
-	    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+	    <script src="carto.js"></script>
 	    <script type="infowindow/html" id="infowindow_template">
 		  <div class="cartodb-popup v2">
 		    <a href="#close" class="cartodb-popup-close-button close">x</a>
