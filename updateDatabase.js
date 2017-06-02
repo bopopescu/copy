@@ -31,13 +31,10 @@
  *
  */
 
-var express = require('express');
-var app = express();
 var async = require('async');
 var fs = require('fs');
 var Twit = require('twit');
 
-var schedule = require('node-schedule');
 var nconf = require('nconf');
 nconf.file({ file: 'config.json' }).env();
 var tweetMethods = require("./tweets/tweets.js");
@@ -54,9 +51,9 @@ mongoose.connect('mongodb://refugee:usingtech4good@ds147711.mlab.com:47711/unhcr
 
 var citySchema = new mongoose.Schema({
   numberPositive: Number,
-  numberNegative: Number, 
+  numberNegative: Number,
   numberNeutral: Number,
-  latitude: Number, 
+  latitude: Number,
   longitude: Number,
   name: String,
   posts: [String]
@@ -65,38 +62,14 @@ var citySchema = new mongoose.Schema({
 var CityInfo = mongoose.model('CityInfo', citySchema);
 
 var citiesArray = require('./cities.json');
-citiesArray = citiesArray.slice(95, 100);
-
-// We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
-// the work for us.
-app.use(express.static(__dirname));
-
-var cityNameToLatitude = {};
-var cityNameToLongitude = {};
-var cityNameToNumTweets = {};
-var cityNameToProportionPositive = {};
-var cityNameToProportionNegative = {};
-var cityNameToProportionNeutral = {};
-var createCitiesMapping = function() {
-  for (var index = 0; index < citiesArray.length; index++) {
-    var cityName = citiesArray[index].city;
-    var latitude = citiesArray[index].latitude;
-    var longitude = citiesArray[index].longitude;
-    cityNameToLatitude[cityName] = latitude;
-    cityNameToLongitude[cityName] = longitude;
-  }
-}
-createCitiesMapping();
-console.log("printing the maps");
-console.log(cityNameToLatitude);
-console.log(cityNameToLongitude);
+citiesArray = citiesArray.slice(25, 30);
 
 var getStringifiedDate = function(dateObj) {
   var partialString = dateObj.toISOString();
   return partialString.substr(0, partialString.indexOf('T'));
 }
 
-var populate = function() {  
+var update = function() {  
   console.log("inside populate function");
   async.each(citiesArray, function(city, callback) {
     var numPositive = 0;
@@ -109,9 +82,7 @@ var populate = function() {
     var oldDateString = getStringifiedDate(oldDate);
     var queryString = 'refugee since:' + oldDateString + ' until:' + todayDateString; 
     var geocodeString = city.latitude.toString() + "," + city.longitude.toString() + "," + "20mi";
-    console.log("The geocode string is " + geocodeString);
-    console.log(queryString);
-    twitter.get('search/tweets', {q: queryString, lang: 'en', count: 100, geocode: geocodeString}, function(err, data, response) {
+    twitter.get('search/tweets', {q: queryString, lang: 'en', count: 20, geocode: geocodeString}, function(err, data, response) {
       console.log("Got into the Get method");
       async.each(data.statuses, function(status, innerCallback) {
         authorize(function(authClient) {
@@ -149,76 +120,48 @@ var populate = function() {
          });
        });
       }, function (err) {
-        console.log("GOT AN ERROR HERE");   
-        console.log(err);
-        console.log("The latitude is " + cityNameToLatitude[city.city]);
-        var statuses = [];
-        for (var i = 0; i < data.statuses.length; i++) { 
-          statuses.push(data.statuses[i].text);
+        if (err) {
+          console.log("An error occurred- not updating");
         }
-        CityInfo.create({
-          numberPositive: numPositive,
-          numberNegative: numNegative,
-          numberNeutral: numNeutral,
-          latitude: cityNameToLatitude[city.city],
-          longitude: cityNameToLongitude[city.city],
-          name: city.city,
-          posts: statuses
-        }, function(err, cityObj) {
+        CityInfo.findOne({"name" : city.city}, function (err, matchingCity) {
           if (err) {
-            console.error('Error create user', err);
+            return;
+          } else if (!matchingCity) {
+            return;
           } else {
-            console.log('Successfully added city');
+            var updatedNumberPositive = numPositive + matchingCity.numberPositive;
+            var updatedNumberNegative = numNegative + matchingCity.numberNegative;
+            var updatedNumberNeutral = numNeutral + matchingCity.numberNeutral;
+            matchingCity.numberPositive = updatedNumberPositive;
+            matchingCity.numberNegative = updatedNumberNegative;
+            matchingCity.numberNeutral = updatedNumberNeutral;
+            for (var index = 0; index < data.statuses.length; index++) {
+              matchingCity.posts.push(data.statuses[index].text);
+            }
+            matchingCity.save(function(err) {
+              if (err) {
+                console.log("Unable to update the database entry");
+              } else {
+                console.log("Database entry updated successfully");
+              }
+              callback();
+            });
           }
-          callback();
         });
-      });
-    });
-  }, function (err) {
-    if (err) {
-      console.log("Issue");
-    } else {
-      console.log("done with no issues");
-      console.log(cityNameToNumTweets);
-    }
+     });
   });
+}, function(err) {
+  if(err) {
+    console.log("Issue");
+  } else {
+    console.log("Database entries updated");
+    mongoose.disconnect();
+  }
+
+});
 }
-//});
-console.log("calling populate");
 
-populate();
-
-app.get('/proportionPositive/:cityName', function(request, response) {
-  var cityName = request.params.cityName;
-  response.json(cityNameToProportionPositive[cityName]);
-});
-
-app.get('/proportionNeutral/:cityName', function(request, response) {
-  var cityName = request.params.cityName;
-  response.json(cityNameToProportionNeutral[cityName]);
-});
-
-app.get('/proportionNegative/:cityName', function(request, response) {
-  var cityName = request.params.cityName;
-  response.json(cityNameToProportionNegative[cityName]);
-});
-
-// We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
-// the work for us.
-app.use(express.static(__dirname));
-
-app.get('/', function (request, response) {
-    response.send('Simple web server of files from ' + __dirname);
-});
-
-var portNumber = process.env.PORT || 3000;
-console.log("the port number is ");
-console.log(portNumber);
-var server = app.listen(portNumber, function () {
-    var port = server.address().port;
-    console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
-});
-
+update();
 
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');

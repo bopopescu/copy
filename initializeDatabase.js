@@ -65,7 +65,7 @@ var citySchema = new mongoose.Schema({
 var CityInfo = mongoose.model('CityInfo', citySchema);
 
 var citiesArray = require('./cities.json');
-citiesArray = citiesArray.slice(95, 100);
+citiesArray = citiesArray.slice(0, 100);
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
 // the work for us.
@@ -87,9 +87,6 @@ var createCitiesMapping = function() {
   }
 }
 createCitiesMapping();
-console.log("printing the maps");
-console.log(cityNameToLatitude);
-console.log(cityNameToLongitude);
 
 var getStringifiedDate = function(dateObj) {
   var partialString = dateObj.toISOString();
@@ -184,41 +181,8 @@ var populate = function() {
   });
 }
 //});
-console.log("calling populate");
 
 populate();
-
-app.get('/proportionPositive/:cityName', function(request, response) {
-  var cityName = request.params.cityName;
-  response.json(cityNameToProportionPositive[cityName]);
-});
-
-app.get('/proportionNeutral/:cityName', function(request, response) {
-  var cityName = request.params.cityName;
-  response.json(cityNameToProportionNeutral[cityName]);
-});
-
-app.get('/proportionNegative/:cityName', function(request, response) {
-  var cityName = request.params.cityName;
-  response.json(cityNameToProportionNegative[cityName]);
-});
-
-// We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
-// the work for us.
-app.use(express.static(__dirname));
-
-app.get('/', function (request, response) {
-    response.send('Simple web server of files from ' + __dirname);
-});
-
-var portNumber = process.env.PORT || 3000;
-console.log("the port number is ");
-console.log(portNumber);
-var server = app.listen(portNumber, function () {
-    var port = server.address().port;
-    console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
-});
-
 
 var google = require('googleapis');
 var prediction = google.prediction('v1.6');
