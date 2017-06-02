@@ -37,8 +37,8 @@ var fs = require('fs');
 var Twit = require('twit');
 
 var nconf = require('nconf');
-nconf.file({ file: 'config.json' }).env();
-var tweetMethods = require("./tweets/tweets.js");
+nconf.file({ file: './../config.json' }).env();
+var tweetMethods = require("./../tweets/tweets.js");
 var twitter = new Twit({
     consumer_key: nconf.get('TWITTER_CONSUMER_KEY'),
     consumer_secret: nconf.get('TWITTER_CONSUMER_SECRET'),
@@ -62,8 +62,8 @@ var citySchema = new mongoose.Schema({
 
 var CityInfo = mongoose.model('CityInfo', citySchema);
 
-var citiesArray = require('./cities.json');
-citiesArray = citiesArray.slice(25, 30);
+var citiesArray = require('./../cities.json');
+citiesArray = citiesArray.slice(0, 5);
 
 var getStringifiedDate = function(dateObj) {
   var partialString = dateObj.toISOString();
