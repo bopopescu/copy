@@ -1,14 +1,10 @@
-#/usr/bin/env node
-"use strict";
-
-/* jshint node: true */
-
+#!/usr/bin/env node
 var citiesArray = require('./../cities.json');
 
-var node_dropbox = require('dropbox');
+var Dropbox = require('dropbox');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://refugee:usingtech4good@ds147711.mlab.com:47711/unhcr-project');
-var dbx = new Dropbox({accessToken: McoofMjOlREAAAAAAAABQK_nsql_lGQSMLCerb85zqxyjpcAtDzXJN3VPE3OL9fv});
+var dbx = new Dropbox({accessToken: 'McoofMjOlREAAAAAAAABQK_nsql_lGQSMLCerb85zqxyjpcAtDzXJN3VPE3OL9fv'});
 var async = require('async');
 var fs = require('fs');
 var citySchema = new mongoose.Schema({
