@@ -63,7 +63,7 @@ var citySchema = new mongoose.Schema({
 
 var CityInfo = mongoose.model('CityInfo', citySchema);
 
-citiesArray = citiesArray.slice(0, 5);
+citiesArray = citiesArray.slice(0, 100);
 
 var getStringifiedDate = function(dateObj) {
   var partialString = dateObj.toISOString();
