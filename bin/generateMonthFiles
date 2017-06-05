@@ -35,7 +35,7 @@ var indexArray = [];
 
 for (var index = 0; index < citiesArray.length; index++) {
   indexArray.push(index);
-  fileNames.push('data/'+ index + '.tsv');
+  fileNames.push('./data/'+ index + '.tsv');
   fs.writeFileSync(fileNames[index], '');
 }
 
@@ -55,7 +55,7 @@ async.each(indexArray, function(index, callback) {
 }, function (err) {
   if (err) console.log("Error occurred");
   else console.log("Success");
-  var retVal = spawn('git', ['add', 'data']);
+  var retVal = spawn('git', ['add', './data']);
   console.log("Added");
   console.log(retVal.error);
   console.log(retVal.stdout.toString());
