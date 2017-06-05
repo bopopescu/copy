@@ -55,10 +55,9 @@ attribution: 'Stamen'
 		});
 		
 		
-		cartodb.createLayer(map, 'https://kimngo.carto.com/api/v2/viz/9542598a-40bb-11e7-9c44-0ef7f98ade21/viz.json')
+		cartodb.createLayer(map, 'https://kimngo.carto.com/api/v2/viz/2ee3f992-a58f-447a-8d8f-b6984a409b07/viz.json')
 		.addTo(map)
 		.on('done', function(layer) {
-			cdb.vis.Vis.addInfowindow(map, layer.getSubLayer(0), ['percent_tweets_negative']);
 			layer.setInteraction(true);
 			layer.on('featureOver', function(e, latlng, pos, data) {
 				cartodb.log.log(e, latlng, pos, data);
