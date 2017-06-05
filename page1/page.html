@@ -4,7 +4,21 @@
 	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 </head>
 <body>
+	
 	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: retrieving data... </h1>
+	
+	<svg width="960" height="500"></svg>
+
+	<h2>Information:</h2>
+	<div style="margin: 40px">
+		<p id="population" />
+		<p id="rank" />
+		<p id="cstate" />
+		<p id="growth" />
+		<p id="latitude" />
+		<p id="longitude" />
+	</div>
+
 	<style>
 
 .axis .domain {
@@ -12,7 +26,7 @@
 }
 </style>
 
-<svg width="960" height="500"></svg>
+
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -23,8 +37,6 @@ var svg = d3.select("svg"),
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-svg.style.opacity = 0;
 
 var x = d3.scaleBand()
     .rangeRound([0, width - 100])
@@ -66,7 +78,16 @@ $.getJSON("/cities.json", console.log).done( function (cityData) {
 		document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
 		return;
 	}
+    var cit = cityData[parseInt(index)];
+	console.log(cit);
+    document.getElementById("growth").innerHTML = "Population growth from 2000 to 2013: " + cit.growth_from_2000_to_2013;
+	document.getElementById("latitude").innerHTML = "Latitude: " + cit.latitude;
+	document.getElementById("longitude").innerHTML = "Longitude: " + cit.longitude;
+	document.getElementById("population").innerHTML = "Population: " + cit.population;
+    document.getElementById("rank").innerHTML = "Population rank: " + cit.rank;
+	document.getElementById("cstate").innerHTML = "State: " + cit.state;
 
+	
 	d3.tsv("/data/" + index + ".tsv", function(d, i, columns) {
 	for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
 	d.total = t;
@@ -133,8 +154,6 @@ $.getJSON("/cities.json", console.log).done( function (cityData) {
 		.attr("dy", "0.32em")
 		.text(function(d) { return d; });
 
-    svg.style.opacity = 0;
-	unfade(svg);
 	});
 }).fail(function(){
 	document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
