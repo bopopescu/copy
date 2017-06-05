@@ -75,7 +75,7 @@ var index = getURLParameter('city');
 
 $.getJSON(index + ".tsv", console.log).done( function (cityData) {
     
-	document.getElementById("head").innerHTML = "EXPLORE: statistics for " + cityData.city;
+	document.getElementById("head").innerHTML = "EXPLORE: statistics for " + cityData[parseInt(index)].city;
 
 	d3.tsv(getURLParameter('city') + ".tsv", function(d, i, columns) {
 	for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
