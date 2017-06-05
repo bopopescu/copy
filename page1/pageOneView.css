@@ -10,7 +10,8 @@ body{
 }
 
 p{
-	font-family: "Bebas Neue";
+	font-family: 'Oswald', sans-serif;
+	font-size: 24px;
 	font-style: italic;
 	color: #7F9BA7;
 }
