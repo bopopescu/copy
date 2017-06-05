@@ -7,13 +7,18 @@
 	
 	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: retrieving data... </h1>
 	<div style="margin: 40px">
-	    <p id="tweets">Tweet frequency: 63 tweets/day</p>
+		<h2>Tweet statistics:</h2>
+	    <p id="tweets">Tweet frequency: 163 tweets/day</p>
 		<p id="tweets">Captured tweets: 325</p>	
 	</div>
-	<svg width="960" height="300"></svg>
 
-	<h2>Information:</h2>
 	<div style="margin: 40px">
+		<h2>Trends:</h2>
+		<svg width="960" height="300"></svg>
+	</div>
+
+	<div style="margin: 40px">
+		<h2>Other information:</h2>
 		<p id="population" />
 		<p id="rank" />
 		<p id="cstate" />
@@ -76,7 +81,7 @@ var index = getURLParameter('city');
 
 $.getJSON("/cities.json", console.log).done( function (cityData) {
 	try {
-		document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city;
+		document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city + ", " + cityData[parseInt(index)].state;
 	} catch (Exception) {
 		document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
 		return;
