@@ -17,6 +17,7 @@
     "angular-sanitize": "*",
     "async": "*",
     "body-parser": "~1.17.1",
+    "child_process": "^1.0.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "dropbox": "^2.5.4",
@@ -29,6 +30,7 @@
     "nconf": "*",
     "node-schedule": "*",
     "serve-favicon": "~2.4.2",
+    "simple-git": "*",
     "twit": "*"
   }
 }
