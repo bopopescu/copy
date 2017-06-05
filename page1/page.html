@@ -4,7 +4,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 </head>
 <body>
-	<h1 class="pageOne-head"> EXPLORE. </h1>
+	<h1 style="margin: 20px" class="pageOne-head"> EXPLORE. </h1>
 	<style>
 
 .axis .domain {
@@ -53,7 +53,7 @@ var svg = d3.select("svg"),
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var x = d3.scaleBand()
-    .rangeRound([0, width])
+    .rangeRound([0, width - 100])
     .paddingInner(0.05)
     .align(0.1);
 
@@ -63,6 +63,9 @@ var y = d3.scaleLinear()
 var z = d3.scaleOrdinal()
     .range(["#C91616", "#F7E840", "#00840D"]);
     //.range([d3.rgb(248, 105, 107), d3.rgb(255, 255, 128), d3.rgb(0, 176, 80)]);
+
+var formatPercent = d3.format(".0%");
+
 
 d3.tsv("data.tsv", function(d, i, columns) {
   for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
@@ -99,15 +102,15 @@ d3.tsv("data.tsv", function(d, i, columns) {
 
   g.append("g")
       .attr("class", "axis")
-      .call(d3.axisLeft(y).ticks(null, "s"))
+      .call(d3.axisLeft(y).ticks(null, ".0%"))
+	  //.attr("tickFormat", formatPercent)
     .append("text")
       .attr("x", 2)
       .attr("y", y(y.ticks().pop()) + 0.5)
       .attr("dy", "0.32em")
       .attr("fill", "#000")
       .attr("font-weight", "bold")
-      .attr("text-anchor", "start")
-      .text("Sentiment");
+      .attr("text-anchor", "start");
 
   var legend = g.append("g")
       .attr("font-family", "sans-serif")
