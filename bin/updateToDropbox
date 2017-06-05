@@ -33,7 +33,7 @@ var cityNameToIndex = {};
 var createCitiesMapping = function() {
   for (var index = 0; index < citiesArray.length; index++) {
     var cityName = citiesArray[index].city;
-    cityNameToIndex[index] = cityName;
+    cityNameToIndex[cityName] = index;
   }
 }
 
@@ -49,7 +49,7 @@ CityObject.find({}, function(err, cities) {
     var ratio;
     if (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative === 0) ratio = 0.5;
     else ratio = mostRecentMonth.numberPositive / (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative);
-    cityString += ratio.toString() + "\t" + cityNameToIndex[index].toString() + "\n";
+    cityString += ratio.toString() + "\t" + cityNameToIndex[cities[index].name].toString() + "\n";
     fs.appendFileSync('cityInfo.txt', cityString);
     console.log("Appending file");
     console.log(cityString);
