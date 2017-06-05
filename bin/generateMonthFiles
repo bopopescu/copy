@@ -44,7 +44,7 @@ console.log("Done over writing");
 async.each(indexArray, function(index, callback) {
   CityObject.findOne({"name": citiesArray[index].city}, function(err, city) {
     var monthsInfo = city.monthsInfo;
-    fs.writeFileSync(fileNames[index], ''):
+    fs.writeFileSync(fileNames[index], '');
     for (var i = 0; i < monthsInfo.length; i++) {
       var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberPositive + "\t" + monthsInfo[i].numberNegative + "\t";
       monthString = monthString + monthsInfo[i].numberNeutral + "\n";
