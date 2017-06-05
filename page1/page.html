@@ -60,7 +60,12 @@ function unfade(element) {
 var index = getURLParameter('city');
 
 $.getJSON("/cities.json", console.log).done( function (cityData) {
-	document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city;
+	try {
+		document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city;
+	} catch (Exception) {
+		document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
+		return;
+	}
 
 	d3.tsv("/data/" + index + ".tsv", function(d, i, columns) {
 	for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
