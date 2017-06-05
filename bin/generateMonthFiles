@@ -59,7 +59,7 @@ async.each(indexArray, function(index, callback) {
   console.log("Added");
   console.log(retVal.error);
   console.log(retVal.stdout.toString());
-  retVal = spawn('git', ['commit', '-m', '"Committing"']);
+  retVal = spawn('git', ['commit', '-m', '\"Committing\"']);
   console.log("Committed");
   console.log(retVal.error);
   console.log(retVal.stdout.toString());
