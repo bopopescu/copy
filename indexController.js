@@ -54,8 +54,7 @@ attribution: 'Stamen'
 			cartodb.log.log("some error occurred");
 		});
 		
-		
-		cartodb.createLayer(map, 'https://kimngo.carto.com/api/v2/viz/2ee3f992-a58f-447a-8d8f-b6984a409b07/viz.json')
+		cartodb.createLayer(map, 'https://kimngo.carto.com/api/v2/viz/135c2bfb-2c35-415d-ae26-97285000a2c0/viz.json')
 		.addTo(map)
 		.on('done', function(layer) {
 			layer.setInteraction(true);
