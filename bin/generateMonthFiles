@@ -32,7 +32,6 @@ citiesArray = citiesArray.splice(0, 100);
 var fileNames = [];
 var indexArray = [];
 
-
 for (var index = 0; index < citiesArray.length; index++) {
   indexArray.push(index);
   fileNames.push('./data/'+ index.toString() + '.tsv');
@@ -44,10 +43,13 @@ console.log("Done over writing");
 async.each(indexArray, function(index, callback) {
   fs.unlinkSync(fileNames[index]);
   CityObject.findOne({"name": citiesArray[index].city}, function(err, city) {
+    var headerString = "Month\tNegative\tNeutral\tPositive\n";
+    fs.appendFileSync(fileNames[index], headerString);
     var monthsInfo = city.monthsInfo;
     for (var i = 0; i < monthsInfo.length; i++) {
-      var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberPositive + "\t" + monthsInfo[i].numberNegative + "\t";
-      monthString = monthString + monthsInfo[i].numberNeutral + "\n";
+      var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberNegative + "\t" 
+        + monthsInfo[i].numberNeutral + "\t"
+        + monthsInfo[i].numberPositive + "\n";
       fs.appendFileSync(fileNames[index], monthString);
       var retVal = spawn('git', ['add', fileNames[index]]);
     }
@@ -59,7 +61,7 @@ async.each(indexArray, function(index, callback) {
   var retVal = spawn('git', ['add', './data']);
   console.log("Added");
   console.log(retVal.stderr.toString());
-  retVal = spawn('git', ['commit', '-m', '\"Committing\"']);
+  retVal = spawn('git', ['commit', '-m', '\"reformat data files\"']);
   console.log("Committed");
   console.log(retVal.stderr.toString());
   retVal = spawn('git', ['push']);
