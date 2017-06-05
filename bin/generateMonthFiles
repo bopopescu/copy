@@ -42,9 +42,9 @@ for (var index = 0; index < citiesArray.length; index++) {
 console.log("Done over writing");
 
 async.each(indexArray, function(index, callback) {
-  //fs.unlinkSync(fileNames[index]);
   CityObject.findOne({"name": citiesArray[index].city}, function(err, city) {
     var monthsInfo = city.monthsInfo;
+    fs.writeFileSync(fileNames[index], ''):
     for (var i = 0; i < monthsInfo.length; i++) {
       var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberPositive + "\t" + monthsInfo[i].numberNegative + "\t";
       monthString = monthString + monthsInfo[i].numberNeutral + "\n";
