@@ -187,7 +187,7 @@ var update = function() {
               console.log(matchingCity.monthsInfo);
               console.log("Printing the last element of array");
               console.log(matchingCity.monthsInfo[matchingCity.monthsInfo.length - 1]);
-              if (matchingCity.monthsInfo[matchingCity.monthsInfo.length -1].month !== currMonthString) {
+              if (matchingCity.monthsInfo[matchingCity.monthsInfo.length -1].month === currMonthString) {
                 var currMonthObj = matchingCity.monthsInfo[matchingCity.monthsInfo.length -1];
                 currMonthObj.numberPositive += numPositive;
                 currMonthObj.numberNegative += numNegative;
