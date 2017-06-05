@@ -4,45 +4,38 @@
 	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 </head>
 <body>
-	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: statistics for... </h1>
+	
+	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: retrieving data... </h1>
+	<div style="margin: 40px">
+		<h2>Tweet statistics:</h2>
+	    <p id="tweets">Tweet frequency: 163 tweets/day</p>
+		<p id="tweets">Captured tweets: 325</p>	
+	</div>
+
+	<div style="margin: 40px">
+		<h2>Trends:</h2>
+		<svg width="960" height="300"></svg>
+	</div>
+
+	<div style="margin: 40px">
+		<h2>Other information:</h2>
+		<p id="population" />
+		<p id="rank" />
+		<p id="cstate" />
+		<p id="growth" />
+		<p id="latitude" />
+		<p id="longitude" />
+	</div>
+
 	<style>
 
 .axis .domain {
   display: none;
 }
-
-.d3-tip {
-  line-height: 1;
-  font-weight: bold;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 2px;
-}
-
-/* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
-}
-
-/* Style northward tooltips differently */
-.d3-tip.n:after {
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
-}
-
 </style>
 
-<svg width="960" height="500"></svg>
+
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
@@ -71,13 +64,39 @@ function getURLParameter(name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
 }
 
+function unfade(element) {
+    var op = 0;  // initial opacity
+    element.style.display = 'block';
+    var timer = setInterval(function () {
+        if (op >= 1){
+            clearInterval(timer);
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op += op * 0.1;
+    }, 10);
+}
+
 var index = getURLParameter('city');
 
-$.getJSON(index + ".tsv", console.log).done( function (cityData) {
-    
-	document.getElementById("head").innerHTML = "EXPLORE: statistics for " + cityData[parseInt(index)].city;
+$.getJSON("/cities.json", console.log).done( function (cityData) {
+	try {
+		document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city + ", " + cityData[parseInt(index)].state;
+	} catch (Exception) {
+		document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
+		return;
+	}
+    var cit = cityData[parseInt(index)];
+	console.log(cit);
+    document.getElementById("growth").innerHTML = "Population growth from 2000 to 2013: " + cit.growth_from_2000_to_2013;
+	document.getElementById("latitude").innerHTML = "Latitude: " + cit.latitude;
+	document.getElementById("longitude").innerHTML = "Longitude: " + cit.longitude;
+	document.getElementById("population").innerHTML = "Population: " + cit.population;
+    document.getElementById("rank").innerHTML = "Population rank: " + cit.rank;
+	document.getElementById("cstate").innerHTML = "State: " + cit.state;
 
-	d3.tsv(getURLParameter('city') + ".tsv", function(d, i, columns) {
+	
+	d3.tsv("/data/" + index + ".tsv", function(d, i, columns) {
 	for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
 	d.total = t;
 	return d;
@@ -142,7 +161,10 @@ $.getJSON(index + ".tsv", console.log).done( function (cityData) {
 		.attr("y", 9.5)
 		.attr("dy", "0.32em")
 		.text(function(d) { return d; });
+
 	});
+}).fail(function(){
+	document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
 });
 
 </script>
