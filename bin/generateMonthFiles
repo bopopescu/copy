@@ -32,7 +32,6 @@ citiesArray = citiesArray.splice(0, 100);
 var fileNames = [];
 var indexArray = [];
 
-
 for (var index = 0; index < citiesArray.length; index++) {
   indexArray.push(index);
   fileNames.push('./anotherData/'+ index.toString() + '.tsv');
@@ -43,11 +42,14 @@ console.log("Done over writing");
 
 async.each(indexArray, function(index, callback) {
   CityObject.findOne({"name": citiesArray[index].city}, function(err, city) {
+    var headerString = "Month\tNegative\tNeutral\tPositive\n";
+    fs.appendFileSync(fileNames[index], headerString);
     var monthsInfo = city.monthsInfo;
     fs.writeFileSync(fileNames[index], '');
     for (var i = 0; i < monthsInfo.length; i++) {
-      var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberPositive + "\t" + monthsInfo[i].numberNegative + "\t";
-      monthString = monthString + monthsInfo[i].numberNeutral + "\n";
+      var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberNegative + "\t" 
+        + monthsInfo[i].numberNeutral + "\t"
+        + monthsInfo[i].numberPositive + "\n";
       fs.appendFileSync(fileNames[index], monthString);
       //var retVal = spawn('git', ['add', fileNames[index]]);
     }
