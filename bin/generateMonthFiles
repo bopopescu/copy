@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+"use strict";
+
+var citiesArray = require('./../cities.json');
+
+var async = require('async');
+var fs = require('fs');
+// Retrieve
+var mongoose = require('mongoose');
+var spawn = require('child_process').spawnSync;
+mongoose.connect('mongodb://refugee:usingtech4good@ds147711.mlab.com:47711/unhcr-project');
+
+var monthSchema = new mongoose.Schema({ 
+  month: String,
+  numberPositive: Number,
+  numberNegative: Number,
+  numberNeutral: Number
+});
+
+var citySchema = new mongoose.Schema ({
+  monthsInfo: [monthSchema],
+  name: String,
+  latitude: Number,
+  longitude: Number
+});
+
+var CityObject = mongoose.model('CityObject', citySchema);
+
+var MonthObject = mongoose.model('MonthObject', monthSchema);
+
+citiesArray = citiesArray.splice(0, 100);
+var fileNames = [];
+var indexArray = [];
+
+
+for (var index = 0; index < citiesArray.length; index++) {
+  indexArray.push(index);
+  fileNames.push('data/'+ index + '.tsv');
+  fs.writeFileSync(fileNames[index], '');
+}
+
+console.log("Done over writing");
+
+async.each(indexArray, function(index, callback) {
+  fs.unlinkSync(fileNames[index]);
+  CityObject.findOne({"name": citiesArray[index].city}, function(err, city) {
+    var monthsInfo = city.monthsInfo;
+    for (var i = 0; i < monthsInfo.length; i++) {
+      var monthString = monthsInfo[i].month + "\t" + monthsInfo[i].numberPositive + "\t" + monthsInfo[i].numberNegative + "\t";
+      monthString = monthString + monthsInfo[i].numberNeutral + "\n";
+      fs.appendFileSync(fileNames[index], monthString);
+    }
+    callback();  
+  });
+}, function (err) {
+  if (err) console.log("Error occurred");
+  else console.log("Success");
+  var retVal = spawn('git', ['add', 'data']);
+  console.log("Added");
+  console.log(retVal.error);
+  console.log(retVal.stdout.toString());
+  retVal = spawn('git', ['commit', '-m', '"Committing"']);
+  console.log("Committed");
+  console.log(retVal.error);
+  console.log(retVal.stdout.toString());
+  retVal = spawn('git', ['push']);
+  console.log("Pushed");
+  console.log(retVal.error);
+  console.log(retVal.stdout.toString());
+  spawn('git', ['push', 'heroku', 'master']);
+  console.log("Pushed to heroku");
+  mongoose.disconnect();
+});
