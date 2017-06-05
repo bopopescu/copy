@@ -1,3 +1,16 @@
-.pageOne-head {
-    color: green;
+body{
+	/*font-family: 'Work Sans', sans-serif;*/
+	/*font-family:"Helvetica";*/
+	/*font-family: 'Vibur', cursive;*/
+	font-family: 'Oswald', sans-serif;
+	color: #4A432F;
+	letter-spacing: 1px;
+	font-size: 40px;
+	background-color: #FFFFFF;
+}
+
+p{
+	font-family: "Bebas Neue";
+	font-style: italic;
+	color: #7F9BA7;
 }
