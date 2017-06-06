@@ -1,20 +1,26 @@
 <!DOCTYPE html>
+<html ng-app="dataExplore" ng-controller="DataExploreController">
 <head>
 	<link rel="stylesheet" type="text/css" href="pageOneView.css" />
 	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+        <script src="./../node_modules/angular/angular.js" type="text/javascript" ></script>        
+        <script src="./../node_modules/angular-route/angular-route.js"></script>
+        <script src="./../node_modules/angular-resource/angular-resource.js" type="text/javascript"></script>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="PageOneController.js"> </script>
 </head>
-<body>
-	
+<body>	
 	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: retrieving data... </h1>
 	<div style="margin: 40px">
 		<h2>Tweet statistics:</h2>
-	    <p id="tweets">Tweet frequency: 163 tweets/day</p>
+	    <p id="tweets">Tweet frequency: 153 tweets/day</p>
 		<p id="tweets">Captured tweets: 325</p>	
 	</div>
 
 	<div style="margin: 40px">
 		<h2>Trends:</h2>
-		<svg width="960" height="300"></svg>
+		<svg width="960" height="300"></{{svg}}>
 	</div>
 
 	<div style="margin: 40px">
@@ -34,139 +40,5 @@
 }
 </style>
 
-
-
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script>
-
-var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 60},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var x = d3.scaleBand()
-    .rangeRound([0, width - 100])
-    .paddingInner(0.05)
-    .align(0.1);
-
-var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
-
-var z = d3.scaleOrdinal()
-    .range(["#C91616", "#F7E840", "#00840D"]);
-    //.range([d3.rgb(248, 105, 107), d3.rgb(255, 255, 128), d3.rgb(0, 176, 80)]);
-
-var formatPercent = d3.format(".0%");
-
-function getURLParameter(name) {
-  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
-}
-
-function unfade(element) {
-    var op = 0;  // initial opacity
-    element.style.display = 'block';
-    var timer = setInterval(function () {
-        if (op >= 1){
-            clearInterval(timer);
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op += op * 0.1;
-    }, 10);
-}
-
-var index = getURLParameter('city');
-
-$.getJSON("/cities.json", console.log).done( function (cityData) {
-	try {
-		document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city + ", " + cityData[parseInt(index)].state;
-	} catch (Exception) {
-		document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
-		return;
-	}
-    var cit = cityData[parseInt(index)];
-	console.log(cit);
-    document.getElementById("growth").innerHTML = "Population growth from 2000 to 2013: " + cit.growth_from_2000_to_2013;
-	document.getElementById("latitude").innerHTML = "Latitude: " + cit.latitude;
-	document.getElementById("longitude").innerHTML = "Longitude: " + cit.longitude;
-	document.getElementById("population").innerHTML = "Population: " + cit.population;
-    document.getElementById("rank").innerHTML = "Population rank: " + cit.rank;
-	document.getElementById("cstate").innerHTML = "State: " + cit.state;
-
-	
-	d3.tsv("/data/" + index + ".tsv", function(d, i, columns) {
-	for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
-	d.total = t;
-	return d;
-	}, function(error, data) {
-	if (error) throw error;
-
-	console.log(data);
-	var keys = data.columns.slice(1);
-
-	//data.sort(function(a, b) { return b.total - a.total; });
-	x.domain(data.map(function(d) { return d.Month; }));
-	y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
-	z.domain(keys);
-
-	g.append("g")
-		.selectAll("g")
-		.data(d3.stack().keys(keys)(data))
-		.enter().append("g")
-		.attr("fill", function(d) { return z(d.key); })
-		.selectAll("rect")
-		.data(function(d) { return d; })
-		.enter().append("rect")
-		.attr("x", function(d) { return x(d.data.Month); })
-		.attr("y", function(d) { return y(d[1]); })
-		.attr("height", function(d) { return y(d[0]) - y(d[1]); })
-		.attr("width", x.bandwidth());
-
-	g.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
-
-	g.append("g")
-		.attr("class", "axis")
-		.call(d3.axisLeft(y).ticks(null, ".0%"))
-		//.attr("tickFormat", formatPercent)
-		.append("text")
-		.attr("x", 2)
-		.attr("y", y(y.ticks().pop()) + 0.5)
-		.attr("dy", "0.32em")
-		.attr("fill", "#000")
-		.attr("font-weight", "bold")
-		.attr("text-anchor", "start");
-
-	var legend = g.append("g")
-		.attr("font-family", "sans-serif")
-		.attr("font-size", 10)
-		.attr("text-anchor", "end")
-		.selectAll("g")
-		.data(keys.slice().reverse())
-		.enter().append("g")
-		.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-	legend.append("rect")
-		.attr("x", width - 19)
-		.attr("width", 19)
-		.attr("height", 19)
-		.attr("fill", z);
-
-	legend.append("text")
-		.attr("x", width - 24)
-		.attr("y", 9.5)
-		.attr("dy", "0.32em")
-		.text(function(d) { return d; });
-
-	});
-}).fail(function(){
-	document.getElementById("head").innerHTML = "EXPLORE: failed to retrieve data";
-});
-
-</script>
 </body>
 
