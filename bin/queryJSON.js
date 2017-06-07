@@ -26,7 +26,7 @@ var MonthObject = mongoose.model('MonthObject', monthSchema);
 
 citiesArray = citiesArray.splice(0, 100);
 
-var getJSONString = function(cityNumber) {
+module.exports.getJSONString = function(cityNumber) {
   CityObject.findOne({"name": citiesArray[cityNumber].city}, function(err, city) {
     var headerString = "Month\tNegative\tNeutral\tPositive\n";
     var monthsInfoArr = [];
@@ -40,7 +40,7 @@ var getJSONString = function(cityNumber) {
       currMonthObj.ratioNegative = monthsInfo[i].numberNegative / total;
       currMonthObj.ratioPositive = monthsInfo[i].numberPositive / total;
       currMonthObj.ratioNeutral = monthsInfo[i].numberNeutral / total;
-      currMonthObj.total = total;
+      //currMonthObj.total = total;
       monthsInfoArr.push(currMonthObj);
     }
     mongoose.disconnect();
@@ -48,5 +48,3 @@ var getJSONString = function(cityNumber) {
     return JSON.stringify(monthsInfoArr);
   }); 
 }
-
-console.log(getJSONString(1));

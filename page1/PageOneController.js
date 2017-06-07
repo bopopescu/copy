@@ -1,5 +1,4 @@
 'use strict';
-
 var dataExplore = angular.module('dataExplore', ['ngRoute', 'ngResource']);
 
 dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$resource',
@@ -60,25 +59,21 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
          document.getElementById("rank").innerHTML = "Population rank: " + cit.rank;
          document.getElementById("cstate").innerHTML = "State: " + cit.state;
          var t;
-         d3.tsv("/data/" + index + ".tsv", function(d, i, columns) {
-           for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
-           d.total = t;
-           return d;
-         }, function(error, data) {
+         d3.json("/data/" + index + ".json", function(error, data) {
            if (error) throw error;
-           console.log(data);
+           console.log(JSON.stringify(data));
 
 
 
 
-           var keys = data.columns.slice(1);  //  CHANGE THIS!!!
+           var keys = ["ratioNegative", 'ratioNeutral', 'ratioPositive'];  //  CHANGE THIS!!!
 
 
 
            
            //data.sort(function(a, b) { return b.total - a.total; });
-           x.domain(data.map(function(d) { return d.Month; }));
-           y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
+           x.domain(data.map(function(d) { return d.month; }));
+           y.domain([0, d3.max(data, function(d) { return 1; })]).nice();
            z.domain(keys);
            
            g.append("g")
@@ -89,7 +84,7 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
                 .selectAll("rect")
                 .data(function(d) { return d; })
                 .enter().append("rect")
-                .attr("x", function(d) { return x(d.data.Month); })
+                .attr("x", function(d) { return x(d.data.month); })
                 .attr("y", function(d) { return y(d[1]); })
                 .attr("height", function(d) { return y(d[0]) - y(d[1]); })
                 .attr("width", x.bandwidth());
