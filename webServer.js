@@ -42,6 +42,16 @@ app.get('/', function (request, response) {
     response.send('Simple web server of files from ' + __dirname);
 });
 
+app.get('/data/:filereq', function (req, res) {
+    var reqfile = req.params.filereq;
+    var city = reqfile.slice(0, -5);
+    res.type('json');
+    var json = JSON.stringify({
+        'something': city
+    });
+    res.send(json);
+});
+
 var portNumber = process.env.PORT || 3000;
 console.log("the port number is ");
 console.log(portNumber);
