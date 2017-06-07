@@ -10,35 +10,46 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="PageOneController.js"> </script>
 </head>
-<body>	
-	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: retrieving data... </h1>
-	<div style="margin: 40px">
-		<h2>Tweet statistics:</h2>
-	    <p id="tweets">Tweet frequency: 153 tweets/day</p>
-		<p id="tweets">Captured tweets: 325</p>	
-	</div>
 
-	<div style="margin: 40px">
-		<h2>Trends:</h2>
-		<svg width="960" height="300"></{{svg}}>
-	</div>
+<style>
+.flex-container {
+	display: -webkit-flex;
+	display: flex;
+  -webkit-flex-direction: rowe;
+  flex-direction: row;
+}
 
-	<div style="margin: 40px">
-		<h2>Other information:</h2>
-		<p id="population" />
-		<p id="rank" />
-		<p id="cstate" />
-		<p id="growth" />
-		<p id="latitude" />
-		<p id="longitude" />
-	</div>
-
-	<style>
+.flex-item {
+  align-self: flex-start;
+}
 
 .axis .domain {
   display: none;
 }
 </style>
+
+<body>	
+	<h1 id="head" style="margin: 20px" class="pageOne-head"> EXPLORE: retrieving data... </h1>
+	<div class="flex-container">
+		<div class="flex-item" style="margin-left: 40px">
+			<h2>Other information:</h2>
+			<p id="population" />
+			<p id="rank" />
+			<p id="cstate" />
+			<p id="growth" />
+			<p id="latitude" />
+			<p id="longitude" />
+		</div>
+		<div class="flex-item">
+			<div style="margin: 40px">
+				<svg width="600" height="300"></svg>
+			</div>
+			<div style="margin: 40px">
+				<p id="tweets">Tweet frequency: 153 tweets/day</p>
+				<p id="tweets">Captured tweets: 325</p>	
+			</div>
+		</div>
+	</div>
 
 </body>
 
