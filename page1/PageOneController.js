@@ -43,6 +43,16 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
       var index = getURLParameter('city');
       console.log("Printing index");
       console.log(index);
+
+      $.getJSON("/data/" + index + ".json", console.log).done( function (data) {
+        var recent = data[data.length - 1];
+        document.getElementById("tweet-sentiment").innerHTML = "Sentiment (from -1 to 1): " + 
+          ((recent.ratioNegative + recent.ratioPositive != 0) ? 
+          2 * recent.ratioPositive / (recent.ratioNegative + recent.ratioPositive) - 1 : 
+          0);
+        document.getElementById("tweet-num").innerHTML = "Captured tweets this month: " + recent.total;
+        document.getElementById("tweet-pol").innerHTML = "Polarization: " + (1 - recent.ratioNeutral).toFixed(2) * 100 + "%";
+      });
       $.getJSON("/cities.json", console.log).done( function (cityData) {
          try {
            document.getElementById("head").innerHTML = "EXPLORE: data for " + cityData[parseInt(index)].city + ", " + cityData[parseInt(index)].state;
@@ -66,7 +76,7 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
 
 
 
-           var keys = ["ratioNegative", 'ratioNeutral', 'ratioPositive'];  //  CHANGE THIS!!!
+           var keys = ["ratioNegative", 'ratioNeutral', 'ratioPositive'];
 
 
 
