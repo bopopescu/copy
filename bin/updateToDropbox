@@ -47,8 +47,14 @@ CityObject.find({}, function(err, cities) {
     var cityString = cities[index].name + "\t" + cities[index].latitude.toString() + "\t" + cities[index].longitude.toString() + "\t";
     var mostRecentMonth = cities[index].monthsInfo[cities[index].monthsInfo.length - 1];
     var ratio;
-    if (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative === 0) ratio = 0.5;
-    else ratio = mostRecentMonth.numberPositive / (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative);
+    if (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative === 0) { 
+      ratio = 0.5;
+      ratio = ratio.toString();
+    } else {
+      ratio = mostRecentMonth.numberPositive / (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative);
+      ratio = ratio.toString();
+      ratio = ratio.slice(0, ratio.indexOf(".") + 3);
+    }
     cityString += ratio.toString() + "\t" + "page1/page.html?city=" + cityNameToIndex[cities[index].name].toString() + "\n";
     fs.appendFileSync('cityInfo.txt', cityString);
     console.log("Appending file");
