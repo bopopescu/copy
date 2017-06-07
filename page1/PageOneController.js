@@ -46,10 +46,11 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
 
       $.getJSON("/data/" + index + ".json", console.log).done( function (data) {
         var recent = data[data.length - 1];
-        document.getElementById("tweet-sentiment").innerHTML = "Sentiment (from -1 to 1): " + 
+        document.getElementById("tweet-sentiment").innerHTML = "Sentiment (from -1 to +1): " +
+          (recent.ratioPositive > recent.ratioNegative ? "+" : "") +
           ((recent.ratioNegative + recent.ratioPositive != 0) ? 
           2 * recent.ratioPositive / (recent.ratioNegative + recent.ratioPositive) - 1 : 
-          0);
+          0).toFixed(4);
         document.getElementById("tweet-num").innerHTML = "Captured tweets this month: " + recent.total;
         document.getElementById("tweet-pol").innerHTML = "Polarization: " + (1 - recent.ratioNeutral).toFixed(2) * 100 + "%";
       });
