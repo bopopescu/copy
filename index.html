@@ -44,7 +44,7 @@ button {
 
 
 
-	    <link rel="stylesheet" href="carto.css" />
+	    <link rel="stylesheet" href="http://libs.cartodb.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     </head>
     <body>
          <div id="map"></div>
@@ -58,21 +58,23 @@ button {
 		
 	    <!-- no functional popup yet-->
 		<script type="infowindow/html" id="infowindow_template">
-		  <div class="cartodb-popup">
-		    <a href="#close" class="cartodb-popup-close-button close">x</a>
-		     <div class="cartodb-popup-content-wrapper">
-		       <div class="cartodb-popup-header">
-		         <img style="width: 100%" src="https://cartodb.com/assets/logos/logos_full_cartodb_light.png"></src>
-		       </div>
-		       <div class="cartodb-popup-content">
-		         <!-- content.data contains the field info -->
-		         <h4>Percent Tweets Neg: </h4>
-		         <p>{{content.data.name}}</p>
-		       </div>
-		     </div>
-		     <div class="cartodb-popup-tip-container"></div>
-		  </div>
-		</script>
+      <div class="cartodb-popup">
+        <a href="#close" class="cartodb-popup-close-button close">x</a>
+         <div class="cartodb-popup-content-wrapper">
+           <div class="cartodb-popup-content">
+             <!-- content.data contains the field info -->
+             <h4>City:</h4> <p>{{field_1}}</p>
+<h4>Sentiment:</h4> <p>{{field_4}}</p>
+<!--input is supposed to be something like /page1/page.html?city=1-->
+<h4>View the data <a href="/page1/page.html?city=" id="add">here</a>.
+<script type="text/javascript">
+    document.getElementById('add').href = '#' + {{carto_db}};
+</script>
+           </div>
+         </div>
+         <div class="cartodb-popup-tip-container"></div>
+      </div>
+    </script>
 
 		 
      </body>
