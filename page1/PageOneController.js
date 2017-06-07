@@ -67,7 +67,15 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
          }, function(error, data) {
            if (error) throw error;
            console.log(data);
-           var keys = data.columns.slice(1);
+
+
+
+
+           var keys = data.columns.slice(1);  //  CHANGE THIS!!!
+
+
+
+           
            //data.sort(function(a, b) { return b.total - a.total; });
            x.domain(data.map(function(d) { return d.Month; }));
            y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
