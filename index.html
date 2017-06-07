@@ -37,6 +37,21 @@ button {
 	      height: 60px;
 	      border-radius: 5px;
       }
+.cartodb-legend{
+         left: 15px;
+         bottom: auto;
+         width: 220px;
+         height: auto;
+         background-color: #FFF;
+         opacity: 1;
+         border-radius: 5px;
+       } 
+       .cartodb-legend ul li{
+        margin-left: 5px;
+        font-style: italic;
+        font-size: 10px;
+
+       }
 	  
 	  
 	    </style>
@@ -44,7 +59,7 @@ button {
 
 
 
-	    <link rel="stylesheet" href="carto.css" />
+	    <link rel="stylesheet" href="http://libs.cartodb.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     </head>
     <body>
          <div id="map"></div>
@@ -58,21 +73,63 @@ button {
 		
 	    <!-- no functional popup yet-->
 		<script type="infowindow/html" id="infowindow_template">
-		  <div class="cartodb-popup">
-		    <a href="#close" class="cartodb-popup-close-button close">x</a>
-		     <div class="cartodb-popup-content-wrapper">
-		       <div class="cartodb-popup-header">
-		         <img style="width: 100%" src="https://cartodb.com/assets/logos/logos_full_cartodb_light.png"></src>
-		       </div>
-		       <div class="cartodb-popup-content">
-		         <!-- content.data contains the field info -->
-		         <h4>Percent Tweets Neg: </h4>
-		         <p>{{content.data.name}}</p>
-		       </div>
-		     </div>
-		     <div class="cartodb-popup-tip-container"></div>
-		  </div>
-		</script>
+      <div class="cartodb-popup">
+        <a href="#close" class="cartodb-popup-close-button close">x</a>
+         <div class="cartodb-popup-content-wrapper">
+           <div class="cartodb-popup-content">
+             <!-- content.data contains the field info -->
+             <h4>City:</h4> <p>{{field_1}}</p>
+<h4>Sentiment:</h4> <p>{{field_4}}</p>
+<!--input is supposed to be something like /page1/page.html?city=1-->
+<!--<h4>View the data <a href="{{field_5}}" id="add">here</a>.</h4>-->
+<h4>View the data <a href="{{field_5}}">here</a></h4>.
+
+<!--
+<div class='cartodb-legend category'>
+      <div class="legend-title" style="color:#284a59">Sentiment</div>
+        <ul>
+          <li><div class="bullet" style="background-color:#c40000"></div>Negative</li>
+          <li><div class="bullet" style="background-color:#a7f7a8"></div>Neutral</li>
+          <li><div class="bullet" style="background-color:#006837"></div>Positive</li>
+          
+        </ul>
+      </div>
+
+-->
+
+
+           </div>
+         </div>
+         <div class="cartodb-popup-tip-container"></div>
+      </div>
+    </script>
+
+
+<div class='cartodb-legend density'>  
+<ul>
+  <li class="min">
+  Sentiment: 0 (negative) to 1 (positive)
+  </li>
+
+  <li class="graph leg" style="border-radius: 0; border:none">
+  <div class="colors">
+    <div class="quartile" style="background-color:#c40000"></div>
+    <div class="quartile" style="background-color:#e16763"></div>
+    <div class="quartile" style="background-color:#a7f7a8"></div>
+    <div class="quartile" style="background-color:#31a354"></div>
+    <div class="quartile" style="background-color:#006837"></div>
+  </div>
+    <div class="colors" style="font-weight:normal; text-align: center">
+    <div class="quartile" style="padding-top: 5px" >[0-.2]</div>
+    <div class="quartile" style="padding-top: 5px" >[.2-.4]</div>
+    <div class="quartile" style="padding-top: 5px" >[.4-.6]</div>
+    <div class="quartile" style="padding-top: 5px" >[.6-.8]</div>
+    <div class="quartile" style="padding-top: 5px" >[.8-1]</div>
+  </div>
+  </li>
+</ul>
+</div>
+
 
 		 
      </body>

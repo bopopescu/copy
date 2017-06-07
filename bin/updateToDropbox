@@ -1,28 +1,72 @@
 #!/usr/bin/env node
 var citiesArray = require('./../cities.json');
-
 var Dropbox = require('dropbox');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://refugee:usingtech4good@ds147711.mlab.com:47711/unhcr-project');
 var dbx = new Dropbox({accessToken: 'McoofMjOlREAAAAAAAABQK_nsql_lGQSMLCerb85zqxyjpcAtDzXJN3VPE3OL9fv'});
 var async = require('async');
 var fs = require('fs');
-var citySchema = new mongoose.Schema({
+
+var monthSchema = new mongoose.Schema({
+  month: String,
   numberPositive: Number,
   numberNegative: Number,
-  numberNeutral: Number,
-  latitude: Number,
-  longitude: Number,
-  name: String,
-  posts: [String]
+  numberNeutral: Number
 });
 
-var CityInfo = mongoose.model('CityInfo', citySchema);
+var citySchema = new mongoose.Schema ({
+  monthsInfo: [monthSchema],
+  name: String,
+  latitude: Number,
+  longitude: Number
+});
+
+var CityObject = mongoose.model('CityObject', citySchema);
+
+var MonthObject = mongoose.model('MonthObject', monthSchema);
 
 citiesArray = citiesArray.slice(0, 100);
 
-fs.writeFile('out.txt', 'Hello', function(err) {
-  console.log("Written");
-  mongoose.disconnect();
-});
+fs.writeFileSync('cityInfo.txt', '');
 
+var cityNameToIndex = {};
+var createCitiesMapping = function() {
+  for (var index = 0; index < citiesArray.length; index++) {
+    var cityName = citiesArray[index].city;
+    cityNameToIndex[cityName] = index;
+  }
+}
+
+createCitiesMapping();
+
+CityObject.find({}, function(err, cities) {
+  console.log("Inside find method");
+  console.log(cities);
+  for (var index = 0; index < cities.length; index++) {
+    console.log("Index is " + index.toString());
+    var cityString = cities[index].name + "\t" + cities[index].latitude.toString() + "\t" + cities[index].longitude.toString() + "\t";
+    var mostRecentMonth = cities[index].monthsInfo[cities[index].monthsInfo.length - 1];
+    var ratio;
+    if (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative === 0) ratio = 0.5;
+    else ratio = mostRecentMonth.numberPositive / (mostRecentMonth.numberPositive + mostRecentMonth.numberNegative);
+    cityString += ratio.toString() + "\t" + "page1/page.html?city=" + cityNameToIndex[cities[index].name].toString() + "\n";
+    fs.appendFileSync('cityInfo.txt', cityString);
+    console.log("Appending file");
+    console.log(cityString);
+  }
+  mongoose.disconnect();
+  console.log("Just disconnected");
+  fs.readFile('cityInfo.txt', function(err, contents) {
+    if (err) {
+      console.log("ERROR");
+      return;
+    }
+    dbx.filesUpload({path: "/cartoFile.csv", contents: contents, mode: {".tag": "overwrite"}, autorename: false })
+      .then(function(response) {
+        console.log("Got response");
+       })
+      .catch (function(err) {
+        console.log(err);
+      });
+  });
+});
