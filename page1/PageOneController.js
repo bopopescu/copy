@@ -44,6 +44,8 @@ dataExplore.controller('DataExploreController', ['$scope', '$routeParams', '$res
       console.log("Printing index");
       console.log(index);
 
+      document.getElementById("date-ret").innerHTML = "[Information retrieved at " + new Date().toLocaleString() + "]";
+
       $.getJSON("/data/" + index + ".json", console.log).done( function (data) {
         var recent = data[data.length - 1];
         document.getElementById("tweet-sentiment").innerHTML = "Sentiment (from -1 to +1): " +
