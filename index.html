@@ -59,7 +59,7 @@ button {
 
 
 
-	    <link rel="stylesheet" href="newCarto.css" />
+	    <link rel="stylesheet" href="carto.css" />
 <!-- http://libs.cartodb.com/cartodb.js/v3/3.15/themes/css/cartodb.css" /> -->
     </head>
     <body>
@@ -69,18 +69,18 @@ button {
 		</div>
 
 <!-- include cartodb.js library -->
-	    <script src="carto.js"></script>
+	    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
 		
 		
 	    <!-- no functional popup yet-->
 		<script type="infowindow/html" id="infowindow_template">
-      <div class="cartodb-popup">
+      <div class="cartodb-popup header blue v2">
         <a href="#close" class="cartodb-popup-close-button close">x</a>
          <div class="cartodb-popup-content-wrapper">
            <div class="cartodb-popup-content">
              <!-- content.data contains the field info -->
-             <h4>City:</h4> <p>{{field_1}}</p>
-<h4>Sentiment:</h4> <p>{{field_4}}</p>
+             <h4 style = "color:white; background:rgba(0,0,0,0.7)">City:</h4> <p>{{field_1}}</p>
+<h4 style ="color:white; background:rgba(0,0,0,0.7)">Sentiment:</h4> <p>{{field_4}}</p>
 <!--input is supposed to be something like /page1/page.html?city=1-->
 <!--<h4>View the data <a href="{{field_5}}" id="add">here</a>.</h4>-->
 <h4><a href="{{field_5}}">Explore data</a></h4>
